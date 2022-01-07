@@ -41,13 +41,13 @@ function getDate() {
 function addGame() {
   const game = {
     time: getDate(),
-    winner: ['yan', 'ming'],
-    loser: ['bing', 'yu'],
+    winner: ['yu', 'ming'],
+    loser: ['xu', 'yan'],
     score: [10, 6]
   }
   readFile(game)
 }
-// addGame()
+addGame()
 
 function rank(data) {
   const players = ['bing', 'yan', 'yu', 'xu', 'ming']
@@ -143,4 +143,4 @@ function summary() {
     console.error(error)
   }
 }
-summary()
+// summary()
