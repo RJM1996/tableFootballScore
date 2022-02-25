@@ -2,7 +2,7 @@ const { debug } = require('console')
 var fs = require('fs')
 const shell = require('shelljs')
 
-const filePath = './score/score-s5.json'
+const filePath = './score/score-s6.json'
 
 function writeFile(content) {
   console.log('准备写入文件')
@@ -35,19 +35,21 @@ function getDate() {
   var year = now.getFullYear() //得到年份
   var month = now.getMonth() + 1 //得到月份
   var date = now.getDate() //得到日期
-  return `${year}-${month}-${date}`
+  const hours = now.getHours()
+  const minutes = now.getMinutes()
+  return `${year}-${month}-${date} ${hours}:${minutes}`
 }
 
 function addGame() {
   const game = {
     time: getDate(),
-    winner: ['yan', 'bing'],
-    loser: ['yu', 'ming'],
-    score: [10, 9]
+    winner: ['ming', 'xu'],
+    loser: ['yan', 'bing'],
+    score: [10, 3],
   }
   readFile(game)
 }
-addGame()
+// addGame()
 
 function rank(data) {
   const players = ['bing', 'yan', 'yu', 'xu', 'ming']
@@ -74,7 +76,7 @@ function rank(data) {
       yan: [0, 0],
       bing: [0, 0],
       ming: [0, 0],
-      averagingGoal: 0
+      averagingGoal: 0,
     }
     gameArr.forEach((game) => {
       const person = [...game.winner, ...game.loser]
@@ -111,11 +113,11 @@ function rank(data) {
   rankArr.sort((a, b) => b.score - a.score)
   console.log(
     rankArr.map((item) => ({
-      name: item.name,
+      name: item.name.padEnd(4, ' '),
       big: item.big,
       small: item.small,
       num: item.num,
-      score: item.score
+      score: item.score,
     }))
   )
   fs.writeFile('./score/summary.json', JSON.stringify(rankArr), function (err) {
@@ -126,10 +128,15 @@ function rank(data) {
     }
   })
 }
-// rank()
+rank()
 
 function summary() {
-  const pathArr = ['./score/score-s1.json', './score/score-s2.json', './score/score-s3.json', './score/score-s4.json']
+  const pathArr = [
+    './score/score-s1.json',
+    './score/score-s2.json',
+    './score/score-s3.json',
+    './score/score-s4.json',
+  ]
   let gameTotal = []
   try {
     pathArr.forEach((path) => {
@@ -144,3 +151,5 @@ function summary() {
   }
 }
 // summary()
+
+// console.log(getDate())
