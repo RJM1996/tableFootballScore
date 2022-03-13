@@ -2,7 +2,7 @@ const { debug } = require('console')
 var fs = require('fs')
 const shell = require('shelljs')
 
-const filePath = './score/score-s6.json'
+const filePath = './score/score-s7.json'
 
 function writeFile(content) {
   console.log('准备写入文件')
@@ -43,9 +43,9 @@ function getDate() {
 function addGame() {
   const game = {
     time: getDate(),
-    winner: ['yu', 'ming'],
-    loser: ['yan', 'xu'],
-    score: [20, 6],
+    winner: ['ming', 'xu'],
+    loser: ['yu', 'bing'],
+    score: [10, 9],
   }
   readFile(game)
 }
@@ -151,5 +151,3 @@ function summary() {
   }
 }
 // summary()
-
-// console.log(getDate())
