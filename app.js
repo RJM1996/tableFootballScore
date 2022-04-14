@@ -43,7 +43,7 @@ function getDate() {
 function addGame() {
   const game = {
     time: getDate(),
-    winner: ['xu', 'yan'],
+    winner: ['xu', 'bing'],
     loser: ['ming', 'yu'],
     score: [10, 9],
   }
