@@ -4,7 +4,7 @@ const shell = require('shelljs')
 
 const filePath = './score/score-s9.json'
 
-function writeFile(content) {
+function writeFile (content) {
   console.log('准备写入文件')
   const item = JSON.stringify(content)
   fs.writeFile(filePath, item, function (err) {
@@ -16,7 +16,7 @@ function writeFile(content) {
     }
   })
 }
-function readFile(game) {
+function readFile (game) {
   fs.readFile(filePath, function (err, data) {
     if (err) {
       console.log(err)
@@ -30,7 +30,7 @@ function readFile(game) {
   })
 }
 
-function getDate() {
+function getDate () {
   var now = new Date()
   var year = now.getFullYear() //得到年份
   var month = now.getMonth() + 1 //得到月份
@@ -40,18 +40,18 @@ function getDate() {
   return `${year}-${month}-${date} ${hours}:${minutes}`
 }
 
-function addGame() {
+function addGame () {
   const game = {
     time: getDate(),
-    winner: ['xu', 'bing'],
-    loser: ['ming', 'yu'],
-    score: [10, 9],
+    winner: ['bing', 'yan'],
+    loser: ['yu', 'ming'],
+    score: [10, 6],
   }
   readFile(game)
 }
 addGame()
 
-function rank(data) {
+function rank (data) {
   const players = ['bing', 'yan', 'yu', 'xu', 'ming']
   let gameArr = data
   if (!gameArr) {
@@ -130,7 +130,7 @@ function rank(data) {
 }
 // rank()
 
-function summary() {
+function summary () {
   const pathArr = [
     './score/score-s1.json',
     './score/score-s2.json',
