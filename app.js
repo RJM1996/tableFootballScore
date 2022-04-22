@@ -49,7 +49,7 @@ function addGame () {
   }
   readFile(game)
 }
-addGame()
+// addGame()
 
 function rank (data) {
   const players = ['bing', 'yan', 'yu', 'xu', 'ming']
@@ -128,7 +128,7 @@ function rank (data) {
     }
   })
 }
-// rank()
+rank()
 
 function summary () {
   const pathArr = [

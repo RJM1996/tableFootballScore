@@ -46,3 +46,26 @@ export const scoreList: any[] = [
   { time: '2022-4-21 12:26', winner: ['xu', 'yan'], loser: ['yu', 'ming'], score: [10, 3], id: 45 },
   { time: '2022-4-21 12:27', winner: ['xu', 'ming'], loser: ['yu', 'yan'], score: [10, 8], id: 46 },
 ]
+export const playerOpts = [
+  // yan,bing,yu,xu,ming
+  {
+    label: "燕",
+    value: "yan"
+  },
+  {
+    label: "冰",
+    value: "bing"
+  },
+  {
+    label: "玉",
+    value: "yu"
+  },
+  {
+    label: "旭",
+    value: "xu"
+  },
+  {
+    label: "铭",
+    value: "ming"
+  }
+]

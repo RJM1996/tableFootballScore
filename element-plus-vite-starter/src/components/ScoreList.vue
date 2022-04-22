@@ -1,87 +1,3 @@
-<script setup lang="ts">
-import { ref, computed } from "vue";
-import { Timer } from '@element-plus/icons-vue'
-import { scoreList } from './data'
-
-// 时间, 比分, 胜方, 败方
-const columns = [
-  {
-    key: 'id',
-    title: 'ID',
-    align: 'center',
-    width: 80,
-  },
-  {
-    title: "时间",
-    key: "time",
-    align: "center",
-    slot: "time"
-  },
-  {
-    title: "比分",
-    key: "score",
-    align: "center",
-    slot: "score"
-  },
-  {
-    title: "胜方",
-    key: "winner",
-    align: "center",
-    slot: "winner"
-  },
-  {
-    title: "败方",
-    key: "loser",
-    align: "center",
-    slot: "loser"
-  }
-];
-
-const tableData = scoreList.reverse()
-
-const playerOpts = [
-  // yan,bing,yu,xu,ming
-  {
-    label: "燕",
-    value: "yan"
-  },
-  {
-    label: "冰",
-    value: "bing"
-  },
-  {
-    label: "玉",
-    value: "yu"
-  },
-  {
-    label: "旭",
-    value: "xu"
-  },
-  {
-    label: "铭",
-    value: "ming"
-  }
-]
-const formData = ref({
-  player: "yan",
-})
-const player = computed(() => {
-  return (row, key) => {
-    const names = row[key].map(r => {
-      return playerOpts.find(p => p.value === r).label
-    })
-    console.log(key, row, row[key], names)
-    return names
-  }
-})
-const score = computed(() => {
-  return (scoreArr) => `${scoreArr[0]} : ${scoreArr[1]}`
-})
-const onSubmit = () => {
-  console.log(formData.value)
-}
-</script>
-
 <template>
   <div class="table">
     <!-- search form -->
@@ -122,11 +38,70 @@ const onSubmit = () => {
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-else :label="col.title" :prop="col.key" :width="col.width"/>
+        <el-table-column v-else :label="col.title" :prop="col.key" :width="col.width" />
       </template>
     </el-table>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { Timer } from '@element-plus/icons-vue'
+import { scoreList, playerOpts } from './data'
+
+// 时间, 比分, 胜方, 败方
+const columns = [
+  {
+    key: 'id',
+    title: 'ID',
+    align: 'center',
+    width: 80,
+  },
+  {
+    title: "时间",
+    key: "time",
+    align: "center",
+    slot: "time"
+  },
+  {
+    title: "比分",
+    key: "score",
+    align: "center",
+    slot: "score"
+  },
+  {
+    title: "胜方",
+    key: "winner",
+    align: "center",
+    slot: "winner"
+  },
+  {
+    title: "败方",
+    key: "loser",
+    align: "center",
+    slot: "loser"
+  }
+];
+const tableData = scoreList.reverse()
+
+const formData = ref({
+  player: "yan",
+})
+const player = computed(() => {
+  return (row, key) => {
+    const names = row[key].map(r => {
+      return playerOpts.find(p => p.value === r).label
+    })
+    return names
+  }
+})
+const score = computed(() => {
+  return (scoreArr) => `${scoreArr[0]} : ${scoreArr[1]}`
+})
+const onSubmit = () => {
+  console.log(formData.value)
+}
+</script>
 
 <style scoped>
 .table {
