@@ -43,9 +43,9 @@ function getDate () {
 function addGame () {
   const game = {
     time: getDate(),
-    winner: ['xu', 'yan'],
-    loser: ['yu', 'ming'],
-    score: [10, 9],
+    winner: ['xu', 'ming'],
+    loser: ['yu', 'yan'],
+    score: [10, 8],
   }
   readFile(game)
 }
