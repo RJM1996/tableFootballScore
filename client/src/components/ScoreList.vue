@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted, defineProps, toRaw } from "vue";
 import { Timer, Plus } from '@element-plus/icons-vue'
-import { scoreList, playerOpts, player } from './data'
+import { playerOpts, player } from './data'
 import { AddOne, Delete } from '@icon-park/vue-next'
-import type { FormInstance } from "element-plus";
+import { ElMessage, FormInstance } from "element-plus";
+import axios from "axios";
+
+const props = defineProps<{ scoreList: any[], season: number, loading: boolean, }>();
+const emit = defineEmits(['onSuccess'])
+
+const tableData = computed(() => {
+  return props.scoreList.reverse()
+})
 
 // 时间, 比分, 胜方, 败方
 const columns = [
@@ -36,40 +44,77 @@ const columns = [
     key: "loser",
     align: "center",
     slot: "loser"
+  },
+  {
+    title: "操作",
+    key: "action",
+    align: "center",
+    slot: "action"
   }
 ];
-const tableData = scoreList.reverse()
 
-const formData = ref({
-  player: "yan",
-})
 const score = computed(() => {
   return (scoreArr: number[]) => `${scoreArr[0]} : ${scoreArr[1]}`
 })
 
 const addFormRef = ref<FormInstance>()
 const onSubmit = () => {
-  addFormRef.value.validate((valid, fields) => {
+  addFormRef.value?.validate((valid, fields) => {
     if (valid) {
-      console.log('submit!')
-      console.log(addGameFormList)
+      const req = {
+        season: props.season,
+        games: toRaw(addGameFormList.items)
+      }
+      console.log(req)
+      addGame(req)
     } else {
       console.log('error submit!', fields)
     }
   })
 }
+const addGame = (req = {}) => {
+  axios.post('http://localhost:3000/add', req).then((result) => {
+    console.log(result)
+    const { code, msg } = result.data
+    if (code == 200) {
+      emit('onSuccess')
+      showAddModal.value = false
+      ElMessage.success('添加成功')
+    }
+  }).catch((err) => {
+    console.error(err)
+  });
+}
 
 let showAddModal = ref(false)
 const onAddGame = () => {
+  resetAddForm()
   showAddModal.value = true
+}
+const onDeleteGame = (id: number) => {
+  console.log(id)
+  const req = {
+    season: props.season,
+    id
+  }
+  axios.post('http://localhost:3000/delete', req).then((result) => {
+    console.log(result)
+    const { code, msg } = result.data
+    if (code == 200) {
+      ElMessage.success('删除成功')
+      emit('onSuccess')
+    }
+  }).catch((err) => {
+    console.error(err)
+  });
 }
 
 const addGameFormList = reactive({
   items: [
     {
-      winner: ['ming', 'xu'],
-      loser: ['yan', 'yu'],
-      score: [10, 2]
+      winner: [],
+      loser: [],
+      score: [10, 0]
     }
   ]
 })
@@ -85,8 +130,22 @@ const onDeleteGameItem = (index: number) => {
 }
 const rules = {
   required: true,
-  message: 'can not be null',
-  trigger: 'blur',
+  // message: 'can not be null',
+  trigger: 'change',
+}
+
+const resetAddForm = () => {
+  addFormRef.value?.resetFields()
+  addGameFormList.items = [
+    {
+      winner: [],
+      loser: [],
+      score: [10, 0]
+    }
+  ]
+}
+const onModalClose = () => {
+  resetAddForm()
 }
 
 </script>
@@ -97,7 +156,7 @@ const rules = {
       <el-button type="primary" @click="onAddGame">新增对局</el-button>
     </div>
     <!-- table -->
-    <el-table :data="tableData" border stripe max-height="400">
+    <el-table :data="tableData" v-loading="loading" border stripe max-height="400">
       <template v-for="col in columns">
         <el-table-column v-if="col.slot" :label="col.title">
           <template #default="scope">
@@ -118,13 +177,22 @@ const rules = {
             <div v-if="['score'].includes(col.slot)" style="display: flex; align-items: center">
               <el-tag>{{ score(scope.row.score) }}</el-tag>
             </div>
+            <el-popconfirm
+              v-if="['action'].includes(col.slot)"
+              title="Are you sure to delete this?"
+              @confirm="onDeleteGame(scope.row.id)"
+            >
+              <template #reference>
+                <el-button type="danger" plain size="small">删除</el-button>
+              </template>
+            </el-popconfirm>
           </template>
         </el-table-column>
         <el-table-column v-else :label="col.title" :prop="col.key" :width="col.width" />
       </template>
     </el-table>
     <!-- add modal -->
-    <el-dialog v-model="showAddModal" title="新增对局" :width="800">
+    <el-dialog v-model="showAddModal" title="新增对局" :width="800" @close="onModalClose">
       <el-form
         ref="addFormRef"
         inline

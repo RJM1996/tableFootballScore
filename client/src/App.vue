@@ -1,18 +1,78 @@
 <script setup lang="ts">
-import { TabsPaneContext } from 'element-plus/lib/tokens';
-import { ref, toRaw } from 'vue'
+import { ref, toRaw, reactive, onMounted } from 'vue'
 import { Soccer } from '@icon-park/vue-next'
+import axios from 'axios'
 
-let activeTab = ref('list')
-const tabs = [
-  { label: '排名榜', name: 'rank' },
-  { label: '场次记录', name: 'list' }
-]
-const handleClick = (pane: TabsPaneContext, ev: Event) => {
-  const curTab: any = toRaw(pane.paneName)
-  console.log(curTab)
-  activeTab = curTab
+interface RankData {
+  scoreList: any[],
+  rankList: any[],
 }
+const gameData = reactive<RankData>({
+  scoreList: [],
+  rankList: []
+})
+onMounted(() => {
+  getRankData()
+})
+const getRankData = () => {
+  loading.value = true
+  axios.get(`http://localhost:3000/rank?season=${season.value}`).then((result) => {
+    console.log(result)
+    const { code, data = {}, msg } = result.data || {}
+    if (code === 200) {
+      gameData.scoreList = data.scoreList
+      gameData.rankList = data.rankList
+    }
+    loading.value = false
+  }).catch((err) => {
+    console.error(err)
+    loading.value = false
+  });
+}
+const season = ref(9)
+const seasonOpts = [
+  {
+    label: 'S9',
+    value: 9
+  },
+  {
+    label: 'S8',
+    value: 8
+  },
+  {
+    label: 'S7',
+    value: 7
+  },
+  {
+    label: 'S6',
+    value: 6
+  },
+  {
+    label: 'S5',
+    value: 5
+  },
+  {
+    label: 'S4',
+    value: 4
+  },
+  {
+    label: 'S3',
+    value: 3
+  },
+  {
+    label: 'S2',
+    value: 2
+  },
+  {
+    label: 'S1',
+    value: 1
+  },
+]
+const onSeasonChange = () => {
+  getRankData()
+}
+const loading = ref(false)
+
 </script>
 
 <template>
@@ -22,24 +82,33 @@ const handleClick = (pane: TabsPaneContext, ev: Event) => {
       <span>桌上足球俱乐部</span>
     </div>
     <div>
-      <h2 class="season">当前赛季: S9</h2>
-      <Rank></Rank>
-      <ScoreList></ScoreList>
+      <h2 class="season">
+        当前赛季:
+        <el-select v-model="season" style="width:80px" @change="onSeasonChange">
+          <el-option
+            v-for="item in seasonOpts"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </h2>
+      <Rank :rank-list="gameData.rankList" :loading="loading"></Rank>
+      <ScoreList
+        :loading="loading"
+        :score-list="gameData.scoreList"
+        :season="season"
+        @onSuccess="getRankData"
+      ></ScoreList>
     </div>
-    <el-tabs v-if="false" v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
-      <el-tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name">
-        <ScoreList v-if="tab.name === 'list'"></ScoreList>
-        <template v-if="tab.name === 'rank'">
-          <Rank></Rank>
-        </template>
-      </el-tab-pane>
-    </el-tabs>
   </div>
 </template>
 
 <style>
 #app {
   height: initial;
+  width: 850px;
+  margin: 0 auto;
   padding: 40px;
   text-align: center;
   font-size: 16px;

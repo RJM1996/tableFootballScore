@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { player } from './data';
-const rankList = [
-  { name: 'xu  ', big: 27, small: 340, num: 39, score: '12.18' },
-  { name: 'ming', big: 25, small: 356, num: 43, score: '11.19' },
-  { name: 'yan ', big: 17, small: 281, num: 36, score: '10.17' },
-  { name: 'bing', big: 11, small: 199, num: 28, score: '9.07' },
-  { name: 'yu  ', big: 12, small: 270, num: 38, score: '8.68' }
-]
+
+defineProps<{ rankList: any[], loading: boolean }>();
+
 // rank, name, big, small, num, score
 const columns = [
   {
@@ -23,6 +19,12 @@ const columns = [
     slot: "name"
   },
   {
+    title: "积分",
+    key: "score",
+    align: "center",
+    slot: "score"
+  },
+  {
     title: "获胜局数",
     key: "big",
     align: "center",
@@ -37,12 +39,6 @@ const columns = [
     key: "num",
     align: "center",
   },
-  {
-    title: "积分",
-    key: "score",
-    align: "center",
-    slot: "score"
-  }
 ];
 
 </script>
@@ -50,7 +46,7 @@ const columns = [
 <template>
   <div>
     <p class="tip">积分计算规则: (获取局数*5 + 进球数) / 场次</p>
-    <el-table :data="rankList" border stripe max-height="600">
+    <el-table :data="rankList" v-loading="loading" border stripe>
       <template v-for="col in columns">
         <el-table-column v-if="col.slot" :label="col.title">
           <template #default="scope">
