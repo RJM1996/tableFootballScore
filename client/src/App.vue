@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { TabsPaneContext } from 'element-plus/lib/tokens';
 import { ref, toRaw } from 'vue'
+import { Soccer } from '@icon-park/vue-next'
 
 let activeTab = ref('list')
 const tabs = [
@@ -16,8 +17,16 @@ const handleClick = (pane: TabsPaneContext, ev: Event) => {
 
 <template>
   <div>
-    <img alt="Vue logo" class="element-plus-logo" src="./assets/logo.png" />
-    <el-tabs v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
+    <div class="title">
+      <Soccer theme="filled" size="40" fill="#333" />
+      <span>桌上足球俱乐部</span>
+    </div>
+    <div>
+      <h2 class="season">当前赛季: S9</h2>
+      <Rank></Rank>
+      <ScoreList></ScoreList>
+    </div>
+    <el-tabs v-if="false" v-model="activeTab" class="demo-tabs" @tab-click="handleClick">
       <el-tab-pane v-for="tab in tabs" :label="tab.label" :name="tab.name">
         <ScoreList v-if="tab.name === 'list'"></ScoreList>
         <template v-if="tab.name === 'rank'">
@@ -33,8 +42,18 @@ const handleClick = (pane: TabsPaneContext, ev: Event) => {
   height: initial;
   padding: 40px;
   text-align: center;
-  /* color: var(--el-text-color-primary); */
   font-size: 16px;
+}
+.title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  gap: 10px;
+}
+.season {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .element-plus-logo {

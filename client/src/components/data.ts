@@ -1,3 +1,5 @@
+import { computed } from 'vue'
+
 export const scoreList: any[] = [
   { time: '2022-4-11 12:34', winner: ['ming', 'yan'], loser: ['yu', 'xu'], score: [10, 5], id: 1 },
   { time: '2022-4-11 12:34', winner: ['bing', 'xu'], loser: ['yan', 'ming'], score: [10, 7], id: 2 },
@@ -69,3 +71,9 @@ export const playerOpts = [
     value: "ming"
   }
 ]
+export const player = computed(() => {
+  return (row, key) => {
+    const players = Array.isArray(row[key]) ? row[key] : [row[key]]
+    return players.map(r => playerOpts.find(p => p.value === r.trim()).label)
+  }
+})
