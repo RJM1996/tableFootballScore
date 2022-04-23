@@ -8,7 +8,7 @@ const app = new Koa()
 app.use(bodyParser())
 const router = new Router()
 const PORT = 3000
-const RESOURCE_URL = `http://localhost:${PORT}`
+const RESOURCE_URL = `http://127.0.0.1:${PORT}`
 
 router.get('/', async (ctx) => {
   ctx.body = '欢迎使用文件服务（by rjm）'

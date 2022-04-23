@@ -4,13 +4,17 @@ import { Timer, Plus } from '@element-plus/icons-vue'
 import { playerOpts, player } from './data'
 import { AddOne, Delete } from '@icon-park/vue-next'
 import { ElMessage, FormInstance } from "element-plus";
-import axios from "axios";
+import axios from "~/common/axios";
 
-const props = defineProps<{ scoreList: any[], season: number, loading: boolean, }>();
+const props = defineProps<{ scoreList: any[], season: number, loading: boolean, isAdmin: boolean }>();
 const emit = defineEmits(['onSuccess'])
 
 const tableData = computed(() => {
   return props.scoreList.reverse()
+})
+
+const tableColumns = computed(() => {
+  return props.isAdmin ? columns : columns.filter(col => col.key !== 'action')
 })
 
 // 时间, 比分, 胜方, 败方
@@ -73,7 +77,7 @@ const onSubmit = () => {
   })
 }
 const addGame = (req = {}) => {
-  axios.post('http://localhost:3000/add', req).then((result) => {
+  axios.post('/add', req).then((result) => {
     console.log(result)
     const { code, msg } = result.data
     if (code == 200) {
@@ -97,7 +101,7 @@ const onDeleteGame = (id: number) => {
     season: props.season,
     id
   }
-  axios.post('http://localhost:3000/delete', req).then((result) => {
+  axios.post('/delete', req).then((result) => {
     console.log(result)
     const { code, msg } = result.data
     if (code == 200) {
@@ -153,11 +157,11 @@ const onModalClose = () => {
 <template>
   <div class="table">
     <div class="action-btn">
-      <el-button type="primary" @click="onAddGame">新增对局</el-button>
+      <el-button v-if="isAdmin" type="primary" @click="onAddGame">新增对局</el-button>
     </div>
     <!-- table -->
     <el-table :data="tableData" v-loading="loading" border stripe max-height="400">
-      <template v-for="col in columns">
+      <template v-for="col in tableColumns">
         <el-table-column v-if="col.slot" :label="col.title">
           <template #default="scope">
             <div v-if="col.slot === 'time'" style="display: flex; align-items: center">
@@ -178,7 +182,7 @@ const onModalClose = () => {
               <el-tag>{{ score(scope.row.score) }}</el-tag>
             </div>
             <el-popconfirm
-              v-if="['action'].includes(col.slot)"
+              v-if="['action'].includes(col.slot) && isAdmin"
               title="Are you sure to delete this?"
               @confirm="onDeleteGame(scope.row.id)"
             >

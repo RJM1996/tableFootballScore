@@ -6,7 +6,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "generate": "vite-ssg build",
-    "preview": "vite preview",
+    "pre": "vite build && vite preview --port 9596 --host",
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {

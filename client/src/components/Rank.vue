@@ -45,10 +45,10 @@ const columns = [
 
 <template>
   <div>
-    <p class="tip">积分计算规则: (获取局数*5 + 进球数) / 场次</p>
+    <p class="tip">积分计算规则: (获胜局数*5 + 进球数) / 场次</p>
     <el-table :data="rankList" v-loading="loading" border stripe>
       <template v-for="col in columns">
-        <el-table-column v-if="col.slot" :label="col.title">
+        <el-table-column v-if="col.slot" :label="col.title" :width="col.width">
           <template #default="scope">
             <div v-if="col.slot === 'name'" style="display: flex; align-items: center">
               <template v-for="p in player(scope.row, col.slot)">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, toRaw, reactive, onMounted } from 'vue'
+import { ref, toRaw, reactive, onMounted, computed } from 'vue'
 import { Soccer } from '@icon-park/vue-next'
-import axios from 'axios'
+import axios from '~/common/axios'
 
 interface RankData {
   scoreList: any[],
@@ -16,7 +16,7 @@ onMounted(() => {
 })
 const getRankData = () => {
   loading.value = true
-  axios.get(`http://localhost:3000/rank?season=${season.value}`).then((result) => {
+  axios.get(`/rank?season=${season.value}`).then((result: any) => {
     console.log(result)
     const { code, data = {}, msg } = result.data || {}
     if (code === 200) {
@@ -24,7 +24,7 @@ const getRankData = () => {
       gameData.rankList = data.rankList
     }
     loading.value = false
-  }).catch((err) => {
+  }).catch((err: any) => {
     console.error(err)
     loading.value = false
   });
@@ -73,6 +73,16 @@ const onSeasonChange = () => {
 }
 const loading = ref(false)
 
+
+const currentPath = ref(window.location.hash)
+window.addEventListener('hashchange', () => {
+  currentPath.value = window.location.hash
+  console.log(currentPath.value)
+})
+const isAdmin = computed(() => {
+  const isAdmin = currentPath.value.includes('admin')
+  return isAdmin
+})
 </script>
 
 <template>
@@ -82,8 +92,8 @@ const loading = ref(false)
       <span>桌上足球俱乐部</span>
     </div>
     <div>
-      <h2 class="season">
-        当前赛季:
+      <div class="season">
+        <span>当前赛季</span>
         <el-select v-model="season" style="width:80px" @change="onSeasonChange">
           <el-option
             v-for="item in seasonOpts"
@@ -92,19 +102,20 @@ const loading = ref(false)
             :value="item.value"
           />
         </el-select>
-      </h2>
+      </div>
       <Rank :rank-list="gameData.rankList" :loading="loading"></Rank>
       <ScoreList
         :loading="loading"
         :score-list="gameData.scoreList"
         :season="season"
+        :isAdmin="isAdmin"
         @onSuccess="getRankData"
       ></ScoreList>
     </div>
   </div>
 </template>
 
-<style>
+<style lang="scss">
 #app {
   height: initial;
   width: 850px;
@@ -122,10 +133,19 @@ const loading = ref(false)
 }
 .season {
   font-size: 18px;
-  font-weight: bold;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    margin-right: 5px;
+  }
 }
 
 .element-plus-logo {
   width: 30%;
+}
+.el-input__inner {
+  font-size: 18px;
 }
 </style>
