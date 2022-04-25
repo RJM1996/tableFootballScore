@@ -69,11 +69,18 @@ export const playerOpts = [
   {
     label: "铭",
     value: "ming"
+  },
+  {
+    label: "寒昱",
+    value: "hanyu"
   }
 ]
 export const player = computed(() => {
   return (row, key) => {
-    const players = Array.isArray(row[key]) ? row[key] : [row[key]]
-    return players.map(r => playerOpts.find(p => p.value === r.trim()).label)
+    if (row[key]) {
+      const players = Array.isArray(row[key]) ? row[key] : [row[key]]
+      return players.map(r => playerOpts.find(p => p.value === r.trim())?.label)
+    }
+    return '未知'
   }
 })
