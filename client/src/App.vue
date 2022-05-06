@@ -32,6 +32,10 @@ const getRankData = () => {
 const season = ref(9)
 const seasonOpts = [
   {
+    label: 'S10',
+    value: 10
+  },
+  {
     label: 'S9',
     value: 9
   },
@@ -94,7 +98,7 @@ const isAdmin = computed(() => {
     <div>
       <div class="season">
         <span>当前赛季</span>
-        <el-select v-model="season" style="width:80px" @change="onSeasonChange">
+        <el-select v-model="season" style="width:100px" @change="onSeasonChange">
           <el-option
             v-for="item in seasonOpts"
             :key="item.value"
