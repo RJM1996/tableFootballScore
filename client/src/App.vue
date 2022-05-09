@@ -29,7 +29,6 @@ const getRankData = () => {
     loading.value = false
   });
 }
-const season = ref(9)
 const seasonOpts = [
   {
     label: 'S10',
@@ -72,6 +71,7 @@ const seasonOpts = [
     value: 1
   },
 ]
+const season = ref(seasonOpts[0].value)
 const onSeasonChange = () => {
   getRankData()
 }
