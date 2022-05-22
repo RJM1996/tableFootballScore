@@ -5,7 +5,7 @@ pm2 start ./server/src/app.js
 curPath=$(cd "$(dirname "$0")"; pwd)
 cd "${curPath}"
 cd ./client
-npm run build
+# npm run build
 npm run pre
 
 cd "${curPath}"
