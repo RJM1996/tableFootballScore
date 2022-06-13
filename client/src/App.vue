@@ -34,6 +34,10 @@
   }
   const seasonOpts = [
     {
+      label: 'S11',
+      value: 11,
+    },
+    {
       label: 'S10',
       value: 10,
     },
