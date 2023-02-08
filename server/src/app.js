@@ -7,7 +7,7 @@ const { getScoreList, getRankList, addGameForSeason, deleteGameForSeason } = req
 const app = new Koa()
 app.use(bodyParser())
 const router = new Router()
-const PORT = 3000
+const PORT = 9596
 const RESOURCE_URL = `http://127.0.0.1:${PORT}`
 
 router.get('/', async (ctx) => {
